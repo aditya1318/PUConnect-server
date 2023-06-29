@@ -2,8 +2,7 @@
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import dotenv from 'dotenv';
-import passport from 'passport';
-import GoogleStrategy from 'passport-google-oauth20';
+import signAndSendToken from '../lib/signToken.js';
 dotenv.config();
 
  // controllers/authController.js
@@ -11,37 +10,29 @@ dotenv.config();
 
  
  
- export const googleLogin = (req, res, next) => {
-  passport.authenticate('google', { scope: ['profile'] }, (err, user, info) => {
-    if (err) { 
-      return res.status(500).json({ status: 'error', message: 'An error occurred during authentication.' });
-    }
-    if (!user) {
-      return res.status(401).json({ status: 'fail', message: 'Authentication failed.' });
-    }
-    req.logIn(user, function(err) {
-      if (err) { 
-        return res.status(500).json({ status: 'error', message: 'An error occurred during login.' });
-      }
-      return res.status(200).json({ status: 'success', message: 'Successfully authenticated.', user: user });
-    });
-  })(req, res, next);
-};
 
-export const logout = (req, res) => {
-  req.logout();
-  res.status(200).json({ status: 'success', message: 'Successfully logged out.' });
-};
+ export const signUp = catchAsync(async (req, res, next) => {
+  delete req.body.role;
+  const user = await User.create(req.body);
+  signAndSendToken(user, 201, res);
+});
 
-export const getCurrentUser = (req, res) => {
-  if (req.user) {
-    res.status(200).json({ status: 'success', user: req.user });
-  } else {
-    res.status(401).json({ status: 'fail', message: 'No user is currently logged in.' });
-  }
-};
- 
+export const login = catchAsync(async (req, res, next) => {
+  // Get email and password from request body
+  const { email, password } = req.body;
+  if (!email || !password)
+    return next(new AppError('Please provide email and password to login'));
 
+  // Find user based on email (DON'T FORGET TO MANUALLY SELECT PASSWORD TOO)
+  const user = await User.findOne({ email }).select('+password');
+
+  // Check if password is correct using a mongoose instance method defined in user.model.js
+  if (!user || !(await user.checkPassword(password)))
+    return next(new AppError('Invalid email or password'));
+
+  // Create token for user and send response
+  signAndSendToken(user, 200, res);
+});
 
 
 

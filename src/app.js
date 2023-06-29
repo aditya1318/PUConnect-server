@@ -8,12 +8,16 @@ import xss from 'xss-clean';
 import compression from 'compression';
 
 import questionPostRoutes from './routes/questionPost.routes.js';
+import userRoutes from './routes/user.routes.js';
+import userAuthencationRoutes from './routes/authentication.routes.js';
+
 
 
 
 
 import AppError from './utils/appError.js';
 import globalErrorHandler from './controllers/error.controller.js';
+import { authenticate } from 'passport';
 
 // Create main app
 const app = express();
@@ -53,7 +57,9 @@ app.use(bodyParser.json());
 //app
  // .use('/api/users', userRouter);
 
- app.use('/api/user/questionPosts', questionPostRoutes);
+ app.use('/api/user/questionPosts', questionPostRoutes)
+    .use('/api/user',userRoutes)
+    .use('/api/user/authenticate',userAuthencationRoutes);
 
 
 // Create 404 error
