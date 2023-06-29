@@ -1,4 +1,6 @@
 import mongoose from 'mongoose';
+import validator from 'validator';
+import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose;
 
@@ -18,11 +20,27 @@ const InterestSchema = new Schema({
 
 const UserSchema = new Schema({
     name: String,
-    email: String,
-    password: String, // Make sure to hash passwords before storing them
+    email: {
+        type: String,
+        required: [true, 'Please provide your email address'],
+        validate: [validator.isEmail, 'Invalid email address'],
+        unique: true
+      },
+      password: {
+        type: String,
+        required: [true, 'Please provide a password'],
+        minlength: [8, 'Password must be atleast 8 characters long'],
+        trim: true,
+        select: false
+      },// Make sure to hash passwords before storing them
     interests: [InterestSchema], // An array of interests
     // Other fields as necessary...
-});
+},
+{
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true
+  });
 
 
 
@@ -35,5 +53,5 @@ schema.pre('save', async function (next) {
   schema.methods.checkPassword = function (triedPassword) {
     return bcrypt.compare(triedPassword, this.password);
   };
-  
+
   export default mongoose.model('User', UserSchema);
