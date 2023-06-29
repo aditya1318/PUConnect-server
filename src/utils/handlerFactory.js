@@ -23,7 +23,8 @@ export const createOne = Model =>
       .project()
       .paginate();
 
-    const docs = await features.cache();
+    // You need to actually execute the query and store the result in `docs`
+    const docs = await features.execute();
 
     res.status(200).json({
       status: 'success',
@@ -33,6 +34,8 @@ export const createOne = Model =>
       }
     });
   });
+
+
 
 
 export const getOne = (Model, populateOptions) =>

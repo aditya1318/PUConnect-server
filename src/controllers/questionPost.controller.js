@@ -5,7 +5,7 @@ import QuestionPost from '../models/questionsPost.models.js'; // Assuming you ha
 
 export const createQuestionPost = createOne(QuestionPost);
 
-export const getAllQuestionPosts = getAll(QuestionPost);
+export const getAllQuestionPosts = getAll(QuestionPost,  { path: 'comments' });
 
 export const getQuestionPost = getOne(QuestionPost, { path: 'comments' }); // This will populate the comments
 
