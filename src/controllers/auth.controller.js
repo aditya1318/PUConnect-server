@@ -3,7 +3,7 @@ import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import dotenv from 'dotenv';
 import signAndSendToken from '../lib/signToken.js';
-import User from '../models/user.models.js';
+import UserSchema from '../models/user.models.js';
 dotenv.config();
 
  // controllers/authController.js
@@ -14,7 +14,7 @@ dotenv.config();
 
  export const signUp = catchAsync(async (req, res, next) => {
   delete req.body.role;
-  const user = await User.create(req.body);
+  const user = await UserSchema.create(req.body);
   signAndSendToken(user, 201, res);
 });
 
@@ -25,7 +25,7 @@ export const login = catchAsync(async (req, res, next) => {
     return next(new AppError('Please provide email and password to login'));
 
   // Find user based on email (DON'T FORGET TO MANUALLY SELECT PASSWORD TOO)
-  const user = await User.findOne({ email }).select('+password');
+  const user = await UserSchema.findOne({ email }).select('+password');
 
   // Check if password is correct using a mongoose instance method defined in user.model.js
   if (!user || !(await user.checkPassword(password)))

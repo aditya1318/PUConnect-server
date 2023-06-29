@@ -44,13 +44,13 @@ const UserSchema = new Schema({
 
 
 
-schema.pre('save', async function (next) {
+  UserSchema.pre('save', async function (next) {
     this.password = await bcrypt.hash(this.password, +process.env.BCRYPT_SALT);
     next();
   });
   
   // Instance method to check password
-  schema.methods.checkPassword = function (triedPassword) {
+  UserSchema.methods.checkPassword = function (triedPassword) {
     return bcrypt.compare(triedPassword, this.password);
   };
 
