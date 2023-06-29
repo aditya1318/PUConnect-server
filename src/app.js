@@ -17,7 +17,7 @@ import userAuthencationRoutes from './routes/authentication.routes.js';
 
 import AppError from './utils/appError.js';
 import globalErrorHandler from './controllers/error.controller.js';
-import { authenticate } from 'passport';
+
 
 // Create main app
 const app = express();

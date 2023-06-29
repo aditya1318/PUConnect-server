@@ -24,6 +24,16 @@ const UserSchema = new Schema({
     // Other fields as necessary...
 });
 
-const User = mongoose.model('User', UserSchema);
 
-export default User;
+
+schema.pre('save', async function (next) {
+    this.password = await bcrypt.hash(this.password, +process.env.BCRYPT_SALT);
+    next();
+  });
+  
+  // Instance method to check password
+  schema.methods.checkPassword = function (triedPassword) {
+    return bcrypt.compare(triedPassword, this.password);
+  };
+  
+  export default mongoose.model('User', UserSchema);
