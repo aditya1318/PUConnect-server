@@ -3,6 +3,7 @@ import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 import dotenv from 'dotenv';
 import signAndSendToken from '../lib/signToken.js';
+import User from '../models/user.models.js';
 dotenv.config();
 
  // controllers/authController.js
