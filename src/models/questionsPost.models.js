@@ -11,6 +11,7 @@ const CommentSchema = new Schema({
 const QuestionPostSchema = new Schema({
     title: String,
     content: String,
+    subContentOptional: String,
     tags: [String],
     author: { type: mongoose.Schema.ObjectId, ref: 'User' },
     comments: [CommentSchema],
