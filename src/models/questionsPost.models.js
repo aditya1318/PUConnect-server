@@ -12,7 +12,7 @@ const QuestionPostSchema = new Schema({
     title: String,
     content: String,
     subContentOptional: String,
-    tags: [String],
+    tags:  String,
     author: { type: mongoose.Schema.ObjectId, ref: 'User' },
     comments: [CommentSchema],
     createdAt: { type: Date, default: Date.now }
